@@ -1,17 +1,11 @@
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-} from "typeorm";
-import { User } from "./user.entity";
+import { RoutesNames } from "src/config";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-@Entity()
+@Entity({ name: RoutesNames.GUILDS})
 export class Guild {
   @PrimaryGeneratedColumn({
     type: "bigint",
-    name: "guild_id",
+    name: "id",
   })
   id: number;
 
@@ -32,4 +26,10 @@ export class Guild {
     default: 0,
   })
   membersCount: number;
+
+  @CreateDateColumn({name: 'created_at'})
+  createdAt: Date;
+
+  @UpdateDateColumn({name: 'updated_at'})
+  updatedAt: Date;
 }
