@@ -23,6 +23,7 @@ export class CreateGuildsService {
     }
 
     const guild = this.guildRepository.create(dto);
+    
     return this.guildRepository.save(guild);
   }
 }

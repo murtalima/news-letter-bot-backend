@@ -9,6 +9,8 @@ import { FindUsersController } from "./contexts/find/find.controller";
 import { FindUsersService } from "./contexts/find/find.service";
 import { UpdateUsersController } from "./contexts/update/update.controller";
 import { UpdateUsersService } from "./contexts/update/update.service";
+import { AddGuildUsersController } from "./contexts/addGuild/addGuild.controller";
+import { AddGuildUsersService } from "./contexts/addGuild/addGuild.service";
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Guild])],
@@ -17,12 +19,14 @@ import { UpdateUsersService } from "./contexts/update/update.service";
     DeleteUsersController,
     FindUsersController,
     UpdateUsersController,
+    AddGuildUsersController
   ],
   providers: [
     CreateUsersService,
     DeleteUsersService,
     FindUsersService,
     UpdateUsersService,
+    AddGuildUsersService
   ],
 })
 export class UsersModule {}

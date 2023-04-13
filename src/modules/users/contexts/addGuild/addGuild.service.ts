@@ -4,40 +4,48 @@ import {
   Logger,
   NotFoundException,
 } from "@nestjs/common";
-import { CreateUserDto } from "./create.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { alreadyExist } from "src/config/errorsMessages";
 import { Guild } from "src/shared/entities/guild.entity";
 import { User } from "src/shared/entities/user.entity";
+import { AddGuildUserDto } from "./addGuild.dto";
 
 @Injectable()
-export class CreateUsersService {
-  private readonly logger = new Logger(CreateUsersService.name);
+export class AddGuildUsersService {
+  private readonly logger = new Logger(AddGuildUsersService.name);
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Guild) private readonly guildRepository: Repository<Guild>
   ) {}
-  async execute(dto: CreateUserDto) {
-    this.logger.log(`Create User ${dto.discordId}:${dto.name}`);
+  async execute(dto: AddGuildUserDto, userId: string) {
+    this.logger.log(`Adding Guild (${dto.guildId}) to User ${userId}`);
 
-    const userExists = await this.userRepository.findOne({
-      where: { discordId: dto.discordId },
+    const user = await this.userRepository.findOne({
+      where: { discordId: userId },
       relations: ["guilds"],
     });
-    const userGuild = await this.guildRepository.findOne({
+
+    const guild = await this.guildRepository.findOne({
       where: { discordId: dto.guildId },
     });
 
-    if (!userGuild) {
+    if (!guild) {
       throw new NotFoundException("guild-not-found");
     }
 
-    if (userExists) {
+    if (!user) {
       throw new BadRequestException(alreadyExist("user"));
     }
 
-    const user = this.userRepository.create({ ...dto, guilds: [userGuild] });
+    const userAlreadyInGuild = user.guilds.filter(
+      (e) => e.discordId == dto.guildId
+    ).length;
+
+    if (!userAlreadyInGuild) {
+      user.guilds.push(guild);
+    }
+
     return this.userRepository.save(user);
   }
 }

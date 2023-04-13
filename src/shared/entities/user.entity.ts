@@ -1,17 +1,22 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Guild } from "./guild.entity";
+import { Visualization } from "./visualization.entity";
+import { RoutesNames } from "src/config";
 
-@Entity()
+@Entity(RoutesNames.USERS)
 export class User {
   @PrimaryGeneratedColumn({
     type: "bigint",
-    name: "user_id",
+    name: "id",
   })
   id: number;
 
@@ -41,6 +46,25 @@ export class User {
   isAdm: boolean;
 
   @ManyToMany(() => Guild)
-  @JoinTable()
+  @JoinTable({
+    name: "users_guilds",
+    joinColumn: {
+      name: "user",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "guild",
+      referencedColumnName: "id",
+    },
+  })
   guilds: Guild[];
+
+  @OneToMany(() => Visualization, (visualization) => visualization.user)
+  visualizations: Visualization[]
+
+  @CreateDateColumn({name: 'created_at'})
+  createdAt: Date;
+
+  @UpdateDateColumn({name: 'updated_at'})
+  updatedAt: Date;
 }

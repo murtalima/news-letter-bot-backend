@@ -24,23 +24,6 @@ export class UpdateUsersService {
       throw new NotFoundException(notFound("user"));
     }
 
-    if (dto.guildId) {
-      const userAlreadyInGuild = user.guilds.filter(
-        (e) => e.discordId == dto.guildId
-      ).length;
-      if (!userAlreadyInGuild) {
-        const guild = await this.guildRepository.findOne({
-          where: { discordId: dto.guildId },
-        });
-
-        if (!guild) {
-          throw new NotFoundException("guild-not-found");
-        }
-
-        user.guilds.push(guild);
-      }
-    }
-    
     return this.userRepository.save({
       ...user,
       name: dto.name || user.name,

@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import ENTITIES from "./shared/entities";
 import { GuildsModule } from "./modules/guilds/guilds.module";
+import { NewspaperModule } from "./modules/news/news.module";
 
 @Module({
   imports: [
@@ -24,6 +25,8 @@ import { GuildsModule } from "./modules/guilds/guilds.module";
     }),
     UsersModule,
     GuildsModule,
+    NewspaperModule,
+    
   ],
   controllers: [],
   providers: [],

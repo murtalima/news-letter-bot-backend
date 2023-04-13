@@ -18,8 +18,4 @@ export class UpdateUserDto {
   @IsOptional()
   @IsBoolean()
   isMuted?: boolean;
-
-  @IsOptional()
-  @IsString()
-  guildId: string;
 }

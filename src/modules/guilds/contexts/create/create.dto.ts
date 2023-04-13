@@ -13,5 +13,5 @@ export class CreateGuildDto {
 
   @IsOptional()
   @IsNumber()
-  memberCount: number;
+  membersCount: number;
 }
