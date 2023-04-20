@@ -25,6 +25,7 @@ export class CreateUsersService {
       where: { discordId: dto.discordId },
       relations: ["guilds"],
     });
+    
     const userGuild = await this.guildRepository.findOne({
       where: { discordId: dto.guildId },
     });
