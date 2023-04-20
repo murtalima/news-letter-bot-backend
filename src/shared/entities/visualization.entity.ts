@@ -1,4 +1,13 @@
-import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 import { Newspaper } from "./newspaper.entity";
 import { User } from "./user.entity";
 import { ApiProperty } from "@nestjs/swagger";
@@ -15,7 +24,7 @@ export class Visualization {
   @ApiProperty()
   @Column()
   grade: number;
-  
+
   @ApiProperty()
   @ManyToOne(() => Newspaper, (newspaper) => newspaper.visualizations)
   newspaper: Newspaper;
@@ -25,10 +34,10 @@ export class Visualization {
   user: User;
 
   @ApiProperty()
-  @CreateDateColumn({name: 'created_at'})
+  @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
   @ApiProperty()
-  @UpdateDateColumn({name: 'updated_at'})
+  @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 }

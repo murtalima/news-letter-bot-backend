@@ -68,13 +68,13 @@ export class User {
 
   @ApiProperty()
   @OneToMany(() => Visualization, (visualization) => visualization.user)
-  visualizations: Visualization[]
+  visualizations: Visualization[];
 
   @ApiProperty()
-  @CreateDateColumn({name: 'created_at'})
+  @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
   @ApiProperty()
-  @UpdateDateColumn({name: 'updated_at'})
+  @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 }

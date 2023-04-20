@@ -8,21 +8,22 @@ import { CreateNewsDto } from "./create.dto";
 export class CreateNewspaperService {
   private readonly logger = new Logger(CreateNewspaperService.name);
   constructor(
-    @InjectRepository(Newspaper) private readonly newspaperRepository: Repository<Newspaper>
+    @InjectRepository(Newspaper)
+    private readonly newspaperRepository: Repository<Newspaper>
   ) {}
   async execute(dto: CreateNewsDto) {
     this.logger.log(`Create News ${dto.author}`);
 
     const newsExist = await this.newspaperRepository.findOne({
       where: {
-        content: dto.content
-      }
-    })
+        content: dto.content,
+      },
+    });
 
-    if(newsExist) {
-      throw new BadRequestException('newspaper-already-register')
+    if (newsExist) {
+      throw new BadRequestException("newspaper-already-register");
     }
-    
+
     const news = this.newspaperRepository.create(dto);
     return this.newspaperRepository.save(news);
   }

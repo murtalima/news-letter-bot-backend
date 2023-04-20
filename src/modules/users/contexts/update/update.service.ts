@@ -10,7 +10,7 @@ export class UpdateUsersService {
   private readonly logger = new Logger(UpdateUsersService.name);
 
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>
   ) {}
   async execute(dto: UpdateUserDto, discordId: string) {
     this.logger.log(`Update Users`);

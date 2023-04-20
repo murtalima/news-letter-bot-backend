@@ -12,7 +12,7 @@ export class FindUsersService {
   ) {}
   async execute(discordId: string) {
     this.logger.log(`Find Users`);
-    
+
     const user = await this.userRepository.findOne({
       where: { discordId },
       relations: ["guilds"],

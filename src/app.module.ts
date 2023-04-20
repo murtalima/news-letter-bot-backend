@@ -26,7 +26,6 @@ import { NewspaperModule } from "./modules/news/news.module";
     UsersModule,
     GuildsModule,
     NewspaperModule,
-    
   ],
   controllers: [],
   providers: [],

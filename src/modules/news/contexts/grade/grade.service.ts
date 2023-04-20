@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Newspaper } from "src/shared/entities/newspaper.entity";
@@ -9,80 +14,88 @@ import { User, Visualization } from "src/shared/entities";
 export class GradeNewspaperService {
   private readonly logger = new Logger(GradeNewspaperService.name);
   constructor(
-    @InjectRepository(Newspaper) private readonly newspaperRepository: Repository<Newspaper>,
+    @InjectRepository(Newspaper)
+    private readonly newspaperRepository: Repository<Newspaper>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(Visualization) private readonly visualizationRepository: Repository<Visualization>,
+    @InjectRepository(Visualization)
+    private readonly visualizationRepository: Repository<Visualization>
   ) {}
   async execute(newspaperId: number, userId: string, grade: string) {
     this.logger.log(`get news for user: ${newspaperId}`);
 
-    if(grade != 'Like' && grade != 'Dislike') {
-      throw new BadRequestException('grade-should-be-like-or-dislike')
+    if (grade != "Like" && grade != "Dislike") {
+      throw new BadRequestException("grade-should-be-like-or-dislike");
     }
-    
+
     let newspaper = await this.newspaperRepository.findOne({
       where: {
-        id: newspaperId
+        id: newspaperId,
       },
-      relations: ['visualizations']
-    })
+      relations: ["visualizations"],
+    });
 
-    if (!newspaper) throw new NotFoundException(notFound('newspaper'))
-    
-    const user = await this.userRepository.findOne({ where: { discordId: userId} })
+    if (!newspaper) throw new NotFoundException(notFound("newspaper"));
 
-    if (!user) throw new NotFoundException(notFound('user'))
+    const user = await this.userRepository.findOne({
+      where: { discordId: userId },
+    });
 
-    let gradeNumber = 0
-    
-    if(grade == 'Like') gradeNumber = 1
-    else gradeNumber = -1
+    if (!user) throw new NotFoundException(notFound("user"));
+
+    let gradeNumber = 0;
+
+    if (grade == "Like") gradeNumber = 1;
+    else gradeNumber = -1;
 
     let visualization = await this.visualizationRepository.findOne({
       where: {
         user: {
-          id: user.id
+          id: user.id,
         },
         newspaper: {
-          id: newspaper.id
-        }
-      }
+          id: newspaper.id,
+        },
+      },
     });
 
-    if(!visualization) {
+    if (!visualization) {
       visualization = this.visualizationRepository.create({
         newspaper,
         user,
-        grade: gradeNumber
+        grade: gradeNumber,
       });
-      
+
       visualization = await this.visualizationRepository.save(visualization);
     } else {
-      visualization.grade = gradeNumber
-      await this.visualizationRepository.save(visualization)
+      visualization.grade = gradeNumber;
+      await this.visualizationRepository.save(visualization);
     }
-    
+
     newspaper = await this.newspaperRepository.findOne({
       where: {
-        id: newspaperId
+        id: newspaperId,
       },
-      relations: ['visualizations']
-    })
-    
-    const views = newspaper.visualizations.length
+      relations: ["visualizations"],
+    });
 
-    const likes = newspaper.visualizations.map((e) => e.grade).filter((e)=> e > 0).length
+    const views = newspaper.visualizations.length;
 
-    const dislikes = newspaper.visualizations.map((e) => e.grade).filter((e)=> e < 0).length
+    const likes = newspaper.visualizations
+      .map((e) => e.grade)
+      .filter((e) => e > 0).length;
 
-    delete newspaper.visualizations
+    const dislikes = newspaper.visualizations
+      .map((e) => e.grade)
+      .filter((e) => e < 0).length;
+
+    delete newspaper.visualizations;
 
     const response = {
       ...newspaper,
       views: views,
       likes: likes,
-      dislikes: dislikes
-    }
+      dislikes: dislikes,
+    };
 
     return response;
   }

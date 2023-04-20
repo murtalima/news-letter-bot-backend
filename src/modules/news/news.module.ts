@@ -23,8 +23,7 @@ import { GradeNewspaperService } from "./contexts/grade/grade.service";
     CreateNewspaperService,
     GetNewspaperByUserService,
     FindNewspaperService,
-    GradeNewspaperService
+    GradeNewspaperService,
   ],
 })
-
 export class NewspaperModule {}
