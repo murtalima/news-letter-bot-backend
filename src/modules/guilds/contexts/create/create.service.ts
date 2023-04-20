@@ -21,7 +21,7 @@ export class CreateGuildsService {
     });
 
     if (guildExists) {
-      throw new BadRequestException(alreadyExist("user"));
+      throw new BadRequestException(alreadyExist("guild"));
     }
 
     const guild = this.guildRepository.create(dto);
