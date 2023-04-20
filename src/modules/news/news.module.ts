@@ -6,16 +6,24 @@ import { Newspaper } from "src/shared/entities/newspaper.entity";
 import { User, Visualization } from "src/shared/entities";
 import { GetNewspaperByUserController } from "./contexts/getByUser/getByUser.controller";
 import { GetNewspaperByUserService } from "./contexts/getByUser/getByUser.service";
+import { FindNewspaperController } from "./contexts/find/find.controller";
+import { FindNewspaperService } from "./contexts/find/find.service";
+import { GradeNewspaperController } from "./contexts/grade/grade.controller";
+import { GradeNewspaperService } from "./contexts/grade/grade.service";
 
 @Module({
   imports: [TypeOrmModule.forFeature([Newspaper, User, Visualization])],
   controllers: [
     CreateNewspaperController,
-    GetNewspaperByUserController
+    GetNewspaperByUserController,
+    FindNewspaperController,
+    GradeNewspaperController,
   ],
   providers: [
     CreateNewspaperService,
-    GetNewspaperByUserService
+    GetNewspaperByUserService,
+    FindNewspaperService,
+    GradeNewspaperService
   ],
 })
 

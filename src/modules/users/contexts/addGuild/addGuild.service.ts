@@ -1,12 +1,11 @@
 import {
-  BadRequestException,
   Injectable,
   Logger,
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { alreadyExist } from "src/config/errorsMessages";
+import { notFound } from "src/config/errorsMessages";
 import { Guild } from "src/shared/entities/guild.entity";
 import { User } from "src/shared/entities/user.entity";
 import { AddGuildUserDto } from "./addGuild.dto";
@@ -35,7 +34,7 @@ export class AddGuildUsersService {
     }
 
     if (!user) {
-      throw new BadRequestException(alreadyExist("user"));
+      throw new NotFoundException(notFound("user"));
     }
 
     const userAlreadyInGuild = user.guilds.filter(
