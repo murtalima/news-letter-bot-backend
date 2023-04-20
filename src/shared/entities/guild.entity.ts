@@ -1,4 +1,4 @@
-import { ApiExtraModels, ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from "@nestjs/swagger";
 import { RoutesNames } from "src/config";
 import {
   Column,
