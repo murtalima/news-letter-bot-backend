@@ -1,4 +1,11 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 import { Visualization } from "./visualization.entity";
 import { ApiProperty } from "@nestjs/swagger";
 
@@ -22,16 +29,16 @@ export class Newspaper {
     nullable: false,
   })
   author: string;
-  
-  @ApiProperty()
-  @OneToMany(() => Visualization, (visualization) => visualization.newspaper)
-  visualizations: Visualization[]
 
   @ApiProperty()
-  @CreateDateColumn({name: 'created_at'})
+  @OneToMany(() => Visualization, (visualization) => visualization.newspaper)
+  visualizations: Visualization[];
+
+  @ApiProperty()
+  @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
   @ApiProperty()
-  @UpdateDateColumn({name: 'updated_at'})
+  @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 }

@@ -19,14 +19,14 @@ import { AddGuildUsersService } from "./contexts/addGuild/addGuild.service";
     DeleteUsersController,
     FindUsersController,
     UpdateUsersController,
-    AddGuildUsersController
+    AddGuildUsersController,
   ],
   providers: [
     CreateUsersService,
     DeleteUsersService,
     FindUsersService,
     UpdateUsersService,
-    AddGuildUsersService
+    AddGuildUsersService,
   ],
 })
 export class UsersModule {}

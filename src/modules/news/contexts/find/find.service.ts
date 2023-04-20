@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Not, Repository } from "typeorm";
 import { Newspaper } from "src/shared/entities/newspaper.entity";
@@ -9,38 +14,42 @@ import { notFound } from "src/config/errorsMessages";
 export class FindNewspaperService {
   private readonly logger = new Logger(FindNewspaperService.name);
   constructor(
-    @InjectRepository(Newspaper) private readonly newspaperRepository: Repository<Newspaper>,
+    @InjectRepository(Newspaper)
+    private readonly newspaperRepository: Repository<Newspaper>
   ) {}
   async execute(newspaperId: number) {
     this.logger.log(`get news for user: ${newspaperId}`);
 
-    
     const newspaper = await this.newspaperRepository.findOne({
       where: {
-        id: newspaperId
+        id: newspaperId,
       },
       order: {
-        createdAt: "DESC"
+        createdAt: "DESC",
       },
-      relations: ['visualizations']
-    })
+      relations: ["visualizations"],
+    });
 
-    if (!newspaper) throw new NotFoundException(notFound('newspaper'))
-    
-    const views = newspaper.visualizations.length
+    if (!newspaper) throw new NotFoundException(notFound("newspaper"));
 
-    const likes = newspaper.visualizations.map((e) => e.grade).filter((e)=> e > 0).length
+    const views = newspaper.visualizations.length;
 
-    const dislikes = newspaper.visualizations.map((e) => e.grade).filter((e)=> e < 0).length
+    const likes = newspaper.visualizations
+      .map((e) => e.grade)
+      .filter((e) => e > 0).length;
 
-    delete newspaper.visualizations
+    const dislikes = newspaper.visualizations
+      .map((e) => e.grade)
+      .filter((e) => e < 0).length;
+
+    delete newspaper.visualizations;
 
     const response = {
       ...newspaper,
       views: views,
       likes: likes,
-      dislikes: dislikes
-    }
+      dislikes: dislikes,
+    };
 
     return response;
   }

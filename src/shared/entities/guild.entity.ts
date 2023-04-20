@@ -1,8 +1,14 @@
 import { ApiExtraModels, ApiProperty } from "@nestjs/swagger";
 import { RoutesNames } from "src/config";
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 
-@Entity({ name: RoutesNames.GUILDS})
+@Entity({ name: RoutesNames.GUILDS })
 export class Guild {
   @ApiProperty()
   @PrimaryGeneratedColumn({
@@ -33,10 +39,10 @@ export class Guild {
   membersCount: number;
 
   @ApiProperty()
-  @CreateDateColumn({name: 'created_at'})
+  @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
-  
+
   @ApiProperty()
-  @UpdateDateColumn({name: 'updated_at'})
+  @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 }

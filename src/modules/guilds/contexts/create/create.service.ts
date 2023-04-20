@@ -8,9 +8,11 @@ import { alreadyExist } from "src/config/errorsMessages";
 @Injectable()
 export class CreateGuildsService {
   private readonly logger = new Logger(CreateGuildsService.name);
+
   constructor(
     @InjectRepository(Guild) private readonly guildRepository: Repository<Guild>
   ) {}
+
   async execute(dto: CreateGuildDto) {
     this.logger.log(`Create User ${dto.discordId}:${dto.name}`);
 
@@ -23,7 +25,7 @@ export class CreateGuildsService {
     }
 
     const guild = this.guildRepository.create(dto);
-    
+
     return this.guildRepository.save(guild);
   }
 }
