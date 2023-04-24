@@ -1,10 +1,13 @@
 import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { Guild, User } from "src/shared/entities";
-import { GuildsMockRepository } from "src/shared/mocks/guilds.mock";
+import { GuildsMockRepository, guildMockDb } from "src/shared/mocks/guilds.mock";
 import { AddGuildUsersController } from "../addGuild.controller";
 import { AddGuildUsersService } from "../addGuild.service";
-import { UsersMockRepository } from "src/shared/mocks/users.mock";
+import { UsersMockRepository, usersMockDb } from "src/shared/mocks/users.mock";
+import { faker } from "@faker-js/faker";
+import { BadRequestException, NotFoundException } from "@nestjs/common";
+import { alreadyExist, notFound } from "src/config/errorsMessages";
 
 describe("Guild", () => {
   let addGuildUsersController: AddGuildUsersController;
@@ -17,11 +20,11 @@ describe("Guild", () => {
         AddGuildUsersService,
         {
           provide: getRepositoryToken(Guild),
-          useValue: GuildsMockRepository,
+          useFactory: GuildsMockRepository,
         },
         {
           provide: getRepositoryToken(User),
-          useValue: UsersMockRepository,
+          useFactory: UsersMockRepository,
         },
       ],
     }).compile();
@@ -37,6 +40,23 @@ describe("Guild", () => {
     it("should be defined", async () => {
       expect(addGuildUsersService).toBeDefined();
       expect(addGuildUsersController).toBeDefined();
+    });
+
+    it("should add a guild to a user successfully", async () => {
+      await expect(addGuildUsersController.execute({ guildId: guildMockDb[0].discordId }, usersMockDb[0].discordId)).resolves.toBe(undefined)
+    });
+
+    it("should throw a guild not found exception", async () => {
+      await expect(addGuildUsersController.execute({ guildId: faker.random.alphaNumeric(100) }, usersMockDb[0].discordId)).rejects.toThrow(new NotFoundException(notFound('guild')))
+    });
+
+    it("should throw a user not found exception", async () => {
+      await expect(addGuildUsersController.execute({ guildId: guildMockDb[0].discordId }, faker.random.alphaNumeric(100))).rejects.toThrow(new NotFoundException(notFound('user')))
+    });
+
+    it("should throw a guild already exists", async () => {
+      usersMockDb[0].guilds.push(guildMockDb[0])
+      await expect(addGuildUsersController.execute({ guildId: guildMockDb[0].discordId }, usersMockDb[0].discordId)).rejects.toThrow(new BadRequestException(alreadyExist('guild')))
     });
   });
 });

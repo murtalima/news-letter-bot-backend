@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, HttpStatus, Put } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Put,
+} from "@nestjs/common";
 import { RoutesNames, Tags } from "src/config";
 import { UpdateGuildsService } from "./update.service";
 import { Guild } from "src/shared/entities";
@@ -20,7 +27,10 @@ export class UpdateGuildsController {
   @ApiOkResponse({ description: "Guild updated successfully" })
   @HttpCode(HttpStatus.OK)
   @Put("/:discordId")
-  execute(@Body() dto: UpdateGuildDto): Promise<Guild> {
-    return this.service.execute(dto);
+  execute(
+    @Body() dto: UpdateGuildDto,
+    @Param("discordId") discordId: string
+  ): Promise<Guild> {
+    return this.service.execute(dto, discordId);
   }
 }

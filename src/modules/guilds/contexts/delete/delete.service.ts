@@ -11,7 +11,7 @@ export class DeleteGuildsService {
     @InjectRepository(Guild) private readonly guildRepository: Repository<Guild>
   ) {}
   async execute(discordId: string) {
-    this.logger.log(`Delete User ${discordId}`);
+    this.logger.log(`Delete Guild ${discordId}`);
 
     const guild = await this.guildRepository.findOne({
       where: { discordId: discordId },

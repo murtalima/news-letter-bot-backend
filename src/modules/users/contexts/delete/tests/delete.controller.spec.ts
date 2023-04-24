@@ -1,12 +1,12 @@
 import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { DeleteGuildsController } from "src/modules/guilds/contexts/delete/delete.controller";
-import { DeleteGuildsService } from "src/modules/guilds/contexts/delete/delete.service";
-import { Guild, User } from "src/shared/entities";
-import { GuildsMockRepository } from "src/shared/mocks/guilds.mock";
-import { UsersMockRepository } from "src/shared/mocks/users.mock";
+import { User } from "src/shared/entities";
+import { UsersMockRepository, usersMockDb } from "src/shared/mocks/users.mock";
 import { DeleteUsersController } from "../delete.controller";
 import { DeleteUsersService } from "../delete.service";
+import { faker } from "@faker-js/faker";
+import { NotFoundException } from "@nestjs/common";
+import { notFound } from "src/config/errorsMessages";
 
 describe("Guild", () => {
   let deleteUsersController: DeleteUsersController;
@@ -19,7 +19,7 @@ describe("Guild", () => {
         DeleteUsersService,
         {
           provide: getRepositoryToken(User),
-          useValue: UsersMockRepository,
+          useFactory: UsersMockRepository,
         },
       ],
     }).compile();
@@ -34,6 +34,18 @@ describe("Guild", () => {
     it("should be defined", async () => {
       expect(deleteUsersService).toBeDefined();
       expect(deleteUsersController).toBeDefined();
+    });
+
+    it("should delete a user successfully", async () => {
+      await expect(
+        deleteUsersController.execute(usersMockDb[0].discordId)
+      ).resolves.toBe(undefined);
+    });
+
+    it("should throw a user not found exception", async () => {
+      await expect(
+        deleteUsersController.execute(faker.random.numeric(100))
+      ).rejects.toThrow(new NotFoundException(notFound("user")));
     });
   });
 });

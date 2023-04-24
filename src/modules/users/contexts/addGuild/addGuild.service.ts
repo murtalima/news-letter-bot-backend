@@ -1,7 +1,7 @@
-import { Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { notFound } from "src/config/errorsMessages";
+import { alreadyExist, notFound } from "src/config/errorsMessages";
 import { Guild } from "src/shared/entities/guild.entity";
 import { User } from "src/shared/entities/user.entity";
 import { AddGuildUserDto } from "./addGuild.dto";
@@ -37,10 +37,12 @@ export class AddGuildUsersService {
       (e) => e.discordId == dto.guildId
     ).length;
 
-    if (!userAlreadyInGuild) {
-      user.guilds.push(guild);
+    if (userAlreadyInGuild) {
+      throw new BadRequestException(alreadyExist('guild'))
     }
 
-    return this.userRepository.save(user);
+    user.guilds.push(guild);
+    
+    await this.userRepository.save(user);
   }
 }

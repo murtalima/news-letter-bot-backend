@@ -1,9 +1,12 @@
 import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { User } from "src/shared/entities";
-import { UsersMockRepository } from "src/shared/mocks/users.mock";
+import { UsersMockRepository, usersMockDb } from "src/shared/mocks/users.mock";
 import { FindUsersController } from "../find.controller";
 import { FindUsersService } from "../find.service";
+import { faker } from "@faker-js/faker";
+import { NotFoundException } from "@nestjs/common";
+import { notFound } from "src/config/errorsMessages";
 
 describe("Guild", () => {
   let findUsersController: FindUsersController;
@@ -16,7 +19,7 @@ describe("Guild", () => {
         FindUsersService,
         {
           provide: getRepositoryToken(User),
-          useValue: UsersMockRepository,
+          useFactory: UsersMockRepository,
         },
       ],
     }).compile();
@@ -30,6 +33,18 @@ describe("Guild", () => {
     it("should be defined", async () => {
       expect(findUsersService).toBeDefined();
       expect(findUsersController).toBeDefined();
+    });
+
+    it("should find a user successfully", async () => {
+      await expect(
+        findUsersController.execute(usersMockDb[0].discordId)
+      ).resolves.toBe(usersMockDb[0]);
+    });
+
+    it("should throw a user not found", async () => {
+      await expect(
+        findUsersController.execute(faker.random.numeric(100))
+      ).rejects.toThrow(new NotFoundException(notFound("user")));
     });
   });
 });

@@ -11,11 +11,11 @@ export class FindGuildsService {
     @InjectRepository(Guild) private readonly guildRepository: Repository<Guild>
   ) {}
   async execute(discordId: string) {
-    this.logger.log(`Find Users`);
+    this.logger.log(`Find Guild`);
     const guild = await this.guildRepository.findOne({ where: { discordId } });
 
     if (!guild) {
-      throw new NotFoundException(notFound("user"));
+      throw new NotFoundException(notFound("guild"));
     }
 
     return guild;
