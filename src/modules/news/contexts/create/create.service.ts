@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Newspaper } from "src/shared/entities/newspaper.entity";
 import { CreateNewsDto } from "./create.dto";
+import { alreadyExist } from "src/config/errorsMessages";
 
 @Injectable()
 export class CreateNewspaperService {
@@ -21,7 +22,7 @@ export class CreateNewspaperService {
     });
 
     if (newsExist) {
-      throw new BadRequestException("newspaper-already-register");
+      throw new BadRequestException(alreadyExist("newspaper"));
     }
 
     const news = this.newspaperRepository.create(dto);

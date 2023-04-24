@@ -10,6 +10,7 @@ import { FindNewspaperController } from "./contexts/find/find.controller";
 import { FindNewspaperService } from "./contexts/find/find.service";
 import { GradeNewspaperController } from "./contexts/grade/grade.controller";
 import { GradeNewspaperService } from "./contexts/grade/grade.service";
+import { NewspaperRepository } from "src/shared/repositories/newspaper.repository";
 
 @Module({
   imports: [TypeOrmModule.forFeature([Newspaper, User, Visualization])],
@@ -24,6 +25,7 @@ import { GradeNewspaperService } from "./contexts/grade/grade.service";
     GetNewspaperByUserService,
     FindNewspaperService,
     GradeNewspaperService,
+    NewspaperRepository,
   ],
 })
 export class NewspaperModule {}

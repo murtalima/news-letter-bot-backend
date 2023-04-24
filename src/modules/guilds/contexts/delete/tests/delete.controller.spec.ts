@@ -3,7 +3,13 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { Guild } from "src/shared/entities";
 import { DeleteGuildsController } from "../delete.controller";
 import { DeleteGuildsService } from "../delete.service";
-import { GuildsMockRepository } from "src/shared/mocks/guilds.mock";
+import {
+  GuildsMockRepository,
+  guildMockDb,
+} from "src/shared/mocks/guilds.mock";
+import { faker } from "@faker-js/faker";
+import { NotFoundException } from "@nestjs/common";
+import { notFound } from "src/config/errorsMessages";
 
 describe("Guild", () => {
   let deleteGuildsController: DeleteGuildsController;
@@ -16,7 +22,7 @@ describe("Guild", () => {
         DeleteGuildsService,
         {
           provide: getRepositoryToken(Guild),
-          useValue: GuildsMockRepository,
+          useFactory: GuildsMockRepository,
         },
       ],
     }).compile();
@@ -32,6 +38,18 @@ describe("Guild", () => {
     it("should be defined", async () => {
       expect(deleteGuildsService).toBeDefined();
       expect(deleteGuildsController).toBeDefined();
+    });
+
+    it("should delete a guild successfully", async () => {
+      await expect(
+        deleteGuildsController.execute(guildMockDb[0].discordId)
+      ).resolves.toBe(undefined);
+    });
+
+    it("should throw a guild not found", async () => {
+      await expect(
+        deleteGuildsController.execute(faker.datatype.string(10))
+      ).rejects.toThrow(new NotFoundException(notFound("user")));
     });
   });
 });

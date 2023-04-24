@@ -3,7 +3,13 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { Guild } from "src/shared/entities";
 import { FindGuildsController } from "../find.controller";
 import { FindGuildsService } from "../find.service";
-import { GuildsMockRepository } from "src/shared/mocks/guilds.mock";
+import {
+  GuildsMockRepository,
+  guildMockDb,
+} from "src/shared/mocks/guilds.mock";
+import { faker } from "@faker-js/faker";
+import { NotFoundException } from "@nestjs/common";
+import { notFound } from "src/config/errorsMessages";
 
 describe("Guild", () => {
   let findGuildsController: FindGuildsController;
@@ -16,7 +22,7 @@ describe("Guild", () => {
         FindGuildsService,
         {
           provide: getRepositoryToken(Guild),
-          useValue: GuildsMockRepository,
+          useFactory: GuildsMockRepository,
         },
       ],
     }).compile();
@@ -30,6 +36,19 @@ describe("Guild", () => {
     it("should be defined", async () => {
       expect(findGuildsService).toBeDefined();
       expect(findGuildsController).toBeDefined();
+    });
+
+    it("should find a guild successfully", async () => {
+      const user = guildMockDb[faker.datatype.number({ min: 0, max: 2 })];
+      await expect(findGuildsController.execute(user.discordId)).resolves.toBe(
+        user
+      );
+    });
+
+    it("should find a guild successfully", async () => {
+      await expect(
+        findGuildsController.execute(faker.datatype.string(10))
+      ).rejects.toThrow(new NotFoundException(notFound("guild")));
     });
   });
 });

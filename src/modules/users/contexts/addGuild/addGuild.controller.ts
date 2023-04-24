@@ -33,10 +33,10 @@ export class AddGuildUsersController {
   @ApiParam({ name: "userId", example: "360209386682974208" })
   @Post("/:userId/guild")
   @HttpCode(HttpStatus.NO_CONTENT)
-  execute(
+  async execute(
     @Body() dto: AddGuildUserDto,
     @Param("userId") userId: string
-  ): Promise<User> {
-    return this.service.execute(dto, userId);
+  ): Promise<void> {
+    await this.service.execute(dto, userId);
   }
 }

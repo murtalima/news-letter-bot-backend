@@ -11,20 +11,20 @@ export class UpdateGuildsService {
   constructor(
     @InjectRepository(Guild) private readonly guildRepository: Repository<Guild>
   ) {}
-  async execute(dto: UpdateGuildDto) {
+  async execute(dto: UpdateGuildDto, discordId: string) {
     this.logger.log(`Update Users`);
 
     const guild = await this.guildRepository.findOne({
-      where: { discordId: dto.discordId },
+      where: { discordId },
     });
 
     if (!guild) {
-      throw new NotFoundException(notFound("user"));
+      throw new NotFoundException(notFound("guild"));
     }
 
     return this.guildRepository.save({
       ...dto,
-      discordId: dto.discordId,
+      discordId,
       id: guild.id,
     });
   }
